@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
+import { RotateCcw, ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
+import { InterstitialAd } from "@/components/InterstitialAd";
 
 type Cell = { color: string | null; isEndpoint: boolean };
 type Path = { color: string; cells: [number, number][] };
