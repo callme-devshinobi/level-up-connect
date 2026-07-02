@@ -38,6 +38,8 @@ export function FlowGame({
   const [drawing, setDrawing] = useState<{ color: string; cells: [number, number][] } | null>(null);
   const [solved, setSolved] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
+  const [showHintAd, setShowHintAd] = useState(false);
+  const [hintColor, setHintColor] = useState<string | null>(null);
 
   const reset = useCallback(() => {
     setPaths({});
