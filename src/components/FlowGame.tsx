@@ -317,6 +317,22 @@ export function FlowGame({
                     <g key={`ep-${i}`}>
                       {[ep.a, ep.b].map(([r, c], j) => (
                         <g key={j}>
+                          {hintColor === ep.color && (
+                            <circle
+                              cx={c + 0.5}
+                              cy={r + 0.5}
+                              r={0.48}
+                              fill="none"
+                              stroke={ep.color}
+                              strokeWidth={0.06}
+                              opacity={0.9}
+                              style={{
+                                filter: `drop-shadow(0 0 0.4px ${ep.color})`,
+                                transformOrigin: `${c + 0.5}px ${r + 0.5}px`,
+                                animation: "hint-pulse 1.2s ease-out infinite",
+                              }}
+                            />
+                          )}
                           <circle
                             cx={c + 0.5}
                             cy={r + 0.5}
