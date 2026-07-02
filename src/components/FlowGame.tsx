@@ -213,7 +213,7 @@ export function FlowGame({
 
       <div
         ref={boardRef}
-        className="relative w-full max-w-md touch-none select-none rounded-lg bg-card p-1 shadow-md"
+        className="neon-border relative w-full max-w-md touch-none select-none rounded-xl bg-card/60 p-2 backdrop-blur"
         style={{ aspectRatio: "1 / 1" }}
         onPointerDown={(e) => {
           const cell = cellFromEvent(e.clientX, e.clientY);
@@ -230,43 +230,130 @@ export function FlowGame({
         onPointerUp={endDraw}
         onPointerCancel={endDraw}
       >
+        {/* Grid background */}
         <div
-          className="grid h-full w-full gap-[2px] rounded-md bg-border p-[2px]"
-          style={{ gridTemplateColumns: `repeat(${level.size}, minmax(0, 1fr))` }}
+          className="grid h-full w-full gap-px rounded-lg p-px"
+          style={{
+            gridTemplateColumns: `repeat(${level.size}, minmax(0, 1fr))`,
+            backgroundColor: "var(--color-grid)",
+          }}
         >
           {Array.from({ length: level.size }).map((_, r) =>
-            Array.from({ length: level.size }).map((__, c) => {
-              const color = cellColor(r, c);
-              const ep = endpointAt(r, c);
-              return (
-                <div
-                  key={`${r}-${c}`}
-                  className="relative flex items-center justify-center bg-background"
-                  style={{ backgroundColor: "hsl(var(--background))" }}
-                >
-                  {color && !ep && (
-                    <div
-                      className="absolute inset-[15%] rounded-sm"
-                      style={{ backgroundColor: color, opacity: 0.85 }}
-                    />
-                  )}
-                  {ep && (
-                    <div
-                      className="h-[70%] w-[70%] rounded-full shadow-inner"
-                      style={{ backgroundColor: ep.color }}
-                    />
-                  )}
-                </div>
-              );
-            }),
+            Array.from({ length: level.size }).map((__, c) => (
+              <div
+                key={`${r}-${c}`}
+                style={{ backgroundColor: "var(--color-background)" }}
+                className="rounded-[2px]"
+              />
+            )),
           )}
         </div>
+
+        {/* SVG neon lines + endpoints overlay */}
+        <svg
+          className="pointer-events-none absolute inset-2"
+          viewBox={`0 0 ${level.size} ${level.size}`}
+          preserveAspectRatio="none"
+          style={{ overflow: "visible" }}
+        >
+          {(() => {
+            const allPaths: { color: string; cells: [number, number][] }[] = Object.entries(paths)
+              .filter(([, cells]) => cells.length >= 1)
+              .map(([color, cells]) => ({ color, cells }));
+            if (drawing && drawing.cells.length >= 1) {
+              allPaths.push({ color: drawing.color, cells: drawing.cells });
+            }
+            const strokeW = 0.42;
+            return (
+              <>
+                {allPaths.map((p, i) => {
+                  if (p.cells.length < 2) return null;
+                  const d = p.cells
+                    .map(([r, c], idx) => `${idx === 0 ? "M" : "L"} ${c + 0.5} ${r + 0.5}`)
+                    .join(" ");
+                  return (
+                    <g key={i}>
+                      {/* outer glow */}
+                      <path
+                        d={d}
+                        fill="none"
+                        stroke={p.color}
+                        strokeWidth={strokeW * 2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.35}
+                        style={{ filter: `blur(0.15px) drop-shadow(0 0 0.3px ${p.color})` }}
+                      />
+                      {/* main line */}
+                      <path
+                        d={d}
+                        fill="none"
+                        stroke={p.color}
+                        strokeWidth={strokeW}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ filter: `drop-shadow(0 0 0.15px ${p.color})` }}
+                      />
+                      {/* bright core */}
+                      <path
+                        d={d}
+                        fill="none"
+                        stroke="white"
+                        strokeWidth={strokeW * 0.35}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.7}
+                      />
+                    </g>
+                  );
+                })}
+                {/* Endpoints */}
+                {level.endpoints.map((ep, i) => {
+                  const connected = connectedColors.has(ep.color);
+                  return (
+                    <g key={`ep-${i}`}>
+                      {[ep.a, ep.b].map(([r, c], j) => (
+                        <g key={j}>
+                          <circle
+                            cx={c + 0.5}
+                            cy={r + 0.5}
+                            r={0.36}
+                            fill={ep.color}
+                            opacity={0.25}
+                          />
+                          <circle
+                            cx={c + 0.5}
+                            cy={r + 0.5}
+                            r={0.28}
+                            fill={ep.color}
+                            style={{ filter: `drop-shadow(0 0 0.2px ${ep.color})` }}
+                          />
+                          {connected && (
+                            <circle
+                              cx={c + 0.5}
+                              cy={r + 0.5}
+                              r={0.12}
+                              fill="white"
+                              opacity={0.9}
+                            />
+                          )}
+                        </g>
+                      ))}
+                    </g>
+                  );
+                })}
+              </>
+            );
+          })()}
+        </svg>
+
         {solved && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg bg-background/60 text-2xl font-bold text-foreground">
-            Solved!
+          <div className="neon-text pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-background/50 text-3xl font-bold tracking-widest">
+            SOLVED
           </div>
         )}
       </div>
+
 
       <div className="flex w-full max-w-md items-center justify-between gap-2 pt-1">
         <Button variant="outline" size="sm" onClick={onPrev} disabled={levelIndex === 0}>
