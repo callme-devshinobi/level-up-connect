@@ -381,10 +381,34 @@ export function FlowGame({
         <Button variant="secondary" size="sm" onClick={reset}>
           <RotateCcw className="mr-1 h-4 w-4" /> Reset
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowHintAd(true)}
+          disabled={solved}
+          className="border-primary/60 text-primary hover:text-primary"
+        >
+          <Lightbulb className="mr-1 h-4 w-4" /> Hint
+        </Button>
         <Button size="sm" onClick={onNext} disabled={!canNext}>
           Next <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
+
+      {showHintAd && (
+        <InterstitialAd
+          seconds={10}
+          label="Watch ad for hint"
+          onClose={() => {
+            setShowHintAd(false);
+            const target = level.endpoints.find((ep) => !connectedColors.has(ep.color));
+            if (target) {
+              setHintColor(target.color);
+              setTimeout(() => setHintColor(null), 5000);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
