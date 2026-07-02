@@ -56,7 +56,7 @@ export function InterstitialAd({
     >
       <div className="relative rounded-lg bg-card p-4 shadow-xl">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-xs uppercase tracking-wider text-muted-foreground">Ad</span>
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
           {canClose ? (
             <button
               onClick={onClose}
