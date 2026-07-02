@@ -69,14 +69,15 @@ function Index() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="border-b border-border">
+      <header className="border-b border-border/60 backdrop-blur">
         <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold tracking-tight">Flow Connect</h1>
+          <h1 className="neon-text text-lg font-bold uppercase tracking-[0.25em]">Flow ∙ Connect</h1>
           <div className="text-xs text-muted-foreground">
-            Unlocked: {maxUnlocked + 1}/{LEVELS.length}
+            {maxUnlocked + 1}/{LEVELS.length}
           </div>
         </div>
       </header>
+
 
       <main className="flex flex-1 flex-col items-center justify-center px-3 py-4">
         <FlowGame
