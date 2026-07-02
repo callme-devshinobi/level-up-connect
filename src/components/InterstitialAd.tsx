@@ -3,10 +3,17 @@ import { X } from "lucide-react";
 
 /** Adsterra 160x300 (portrait) interstitial. Replace key below. */
 const ADSTERRA_KEY_160x300 = ""; // <-- paste your Adsterra 160x300 key here
-const COUNTDOWN_SECONDS = 5;
 
-export function InterstitialAd({ onClose }: { onClose: () => void }) {
-  const [remaining, setRemaining] = useState(COUNTDOWN_SECONDS);
+export function InterstitialAd({
+  onClose,
+  seconds = 5,
+  label = "Ad",
+}: {
+  onClose: () => void;
+  seconds?: number;
+  label?: string;
+}) {
+  const [remaining, setRemaining] = useState(seconds);
   const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
