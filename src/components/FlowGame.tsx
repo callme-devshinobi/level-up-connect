@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LEVELS, type Level } from "@/lib/levels";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
+import { RotateCcw, ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
+import { InterstitialAd } from "@/components/InterstitialAd";
 
 type Cell = { color: string | null; isEndpoint: boolean };
 type Path = { color: string; cells: [number, number][] };
@@ -37,6 +38,8 @@ export function FlowGame({
   const [drawing, setDrawing] = useState<{ color: string; cells: [number, number][] } | null>(null);
   const [solved, setSolved] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
+  const [showHintAd, setShowHintAd] = useState(false);
+  const [hintColor, setHintColor] = useState<string | null>(null);
 
   const reset = useCallback(() => {
     setPaths({});
@@ -314,6 +317,22 @@ export function FlowGame({
                     <g key={`ep-${i}`}>
                       {[ep.a, ep.b].map(([r, c], j) => (
                         <g key={j}>
+                          {hintColor === ep.color && (
+                            <circle
+                              cx={c + 0.5}
+                              cy={r + 0.5}
+                              r={0.48}
+                              fill="none"
+                              stroke={ep.color}
+                              strokeWidth={0.06}
+                              opacity={0.9}
+                              style={{
+                                filter: `drop-shadow(0 0 0.4px ${ep.color})`,
+                                transformOrigin: `${c + 0.5}px ${r + 0.5}px`,
+                                animation: "hint-pulse 1.2s ease-out infinite",
+                              }}
+                            />
+                          )}
                           <circle
                             cx={c + 0.5}
                             cy={r + 0.5}
@@ -362,10 +381,34 @@ export function FlowGame({
         <Button variant="secondary" size="sm" onClick={reset}>
           <RotateCcw className="mr-1 h-4 w-4" /> Reset
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowHintAd(true)}
+          disabled={solved}
+          className="border-primary/60 text-primary hover:text-primary"
+        >
+          <Lightbulb className="mr-1 h-4 w-4" /> Hint
+        </Button>
         <Button size="sm" onClick={onNext} disabled={!canNext}>
           Next <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
+
+      {showHintAd && (
+        <InterstitialAd
+          seconds={10}
+          label="Watch ad for hint"
+          onClose={() => {
+            setShowHintAd(false);
+            const target = level.endpoints.find((ep) => !connectedColors.has(ep.color));
+            if (target) {
+              setHintColor(target.color);
+              setTimeout(() => setHintColor(null), 5000);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
