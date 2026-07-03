@@ -40,6 +40,18 @@ export function FlowGame({
   const boardRef = useRef<HTMLDivElement>(null);
   const [showHintAd, setShowHintAd] = useState(false);
   const [hintColor, setHintColor] = useState<string | null>(null);
+  const [hintCooldownUntil, setHintCooldownUntil] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (hintCooldownUntil <= now) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [hintCooldownUntil, now]);
+
+  const cooldownRemaining = Math.max(0, Math.ceil((hintCooldownUntil - now) / 1000));
+  const hintDisabled = solved || cooldownRemaining > 0;
+  const formatCooldown = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
   const reset = useCallback(() => {
     setPaths({});
@@ -385,10 +397,11 @@ export function FlowGame({
           variant="outline"
           size="sm"
           onClick={() => setShowHintAd(true)}
-          disabled={solved}
+          disabled={hintDisabled}
           className="border-primary/60 text-primary hover:text-primary"
         >
-          <Lightbulb className="mr-1 h-4 w-4" /> Hint
+          <Lightbulb className="mr-1 h-4 w-4" />
+          {cooldownRemaining > 0 ? formatCooldown(cooldownRemaining) : "Hint"}
         </Button>
         <Button size="sm" onClick={onNext} disabled={!canNext}>
           Next <ChevronRight className="h-4 w-4" />
@@ -406,6 +419,9 @@ export function FlowGame({
               setHintColor(target.color);
               setTimeout(() => setHintColor(null), 5000);
             }
+            const until = Date.now() + 3 * 60 * 1000;
+            setHintCooldownUntil(until);
+            setNow(Date.now());
           }}
         />
       )}
