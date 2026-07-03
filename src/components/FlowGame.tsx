@@ -154,11 +154,9 @@ export function FlowGame({
     setDrawing(null);
   };
 
-  // Check solved: every color connected endpoint-to-endpoint AND every cell filled
+  // Check solved: every color connected endpoint-to-endpoint
   useEffect(() => {
     if (drawing) return;
-    const size = level.size;
-    let filled = 0;
     const allConnected = level.endpoints.every((ep) => {
       const cells = paths[ep.color];
       if (!cells || cells.length < 2) return false;
@@ -167,11 +165,9 @@ export function FlowGame({
       const isAB =
         (first[0] === ep.a[0] && first[1] === ep.a[1] && last[0] === ep.b[0] && last[1] === ep.b[1]) ||
         (first[0] === ep.b[0] && first[1] === ep.b[1] && last[0] === ep.a[0] && last[1] === ep.a[1]);
-      if (!isAB) return false;
-      filled += cells.length;
-      return true;
+      return isAB;
     });
-    if (allConnected && filled === size * size) {
+    if (allConnected) {
       setSolved(true);
       const t = setTimeout(() => onComplete(), 600);
       return () => clearTimeout(t);
