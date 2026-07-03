@@ -29,7 +29,7 @@ const L = (size: number, ...eps: [string, number, number, number, number][]): Le
 
 export const LEVELS: Level[] = [
   // 5x5 — easy intro (1-8)
-  L(5, ["red", 0, 0, 1, 4], ["blue", 1, 1, 4, 4], ["green", 2, 1, 3, 2], ["yellow", 2, 0, 4, 3]),
+  L(5, ["red", 0, 0, 0, 4], ["blue", 4, 0, 4, 4], ["green", 2, 1, 2, 3]),
   L(5, ["red", 0, 0, 4, 1], ["blue", 0, 2, 3, 3], ["green", 2, 1, 4, 4], ["yellow", 0, 4, 2, 4]),
   L(5, ["red", 0, 1, 4, 3], ["blue", 1, 3, 3, 1], ["green", 2, 2, 4, 4], ["yellow", 0, 4, 4, 0]),
   L(5, ["red", 0, 0, 2, 3], ["blue", 1, 1, 4, 4], ["green", 2, 0, 3, 3], ["yellow", 0, 4, 4, 2], ["orange", 3, 0, 4, 1]),
