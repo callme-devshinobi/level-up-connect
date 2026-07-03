@@ -397,10 +397,11 @@ export function FlowGame({
           variant="outline"
           size="sm"
           onClick={() => setShowHintAd(true)}
-          disabled={solved}
+          disabled={hintDisabled}
           className="border-primary/60 text-primary hover:text-primary"
         >
-          <Lightbulb className="mr-1 h-4 w-4" /> Hint
+          <Lightbulb className="mr-1 h-4 w-4" />
+          {cooldownRemaining > 0 ? formatCooldown(cooldownRemaining) : "Hint"}
         </Button>
         <Button size="sm" onClick={onNext} disabled={!canNext}>
           Next <ChevronRight className="h-4 w-4" />
