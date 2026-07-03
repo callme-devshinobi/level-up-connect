@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
  * Replace ADSTERRA_KEY_320x50 with your Adsterra key.
  * Set width/height and script src per your Adsterra dashboard.
  */
-const ADSTERRA_KEY_320x50 = ""; // <-- paste your Adsterra 320x50 key here
+const ADSTERRA_KEY_320x50 = "a4e73aa7b810bddbfa148d0e8fc3cc78";
 
 export function AdBanner320x50() {
   const ref = useRef<HTMLDivElement>(null);
