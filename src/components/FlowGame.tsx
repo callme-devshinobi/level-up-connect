@@ -419,6 +419,9 @@ export function FlowGame({
               setHintColor(target.color);
               setTimeout(() => setHintColor(null), 5000);
             }
+            const until = Date.now() + 3 * 60 * 1000;
+            setHintCooldownUntil(until);
+            setNow(Date.now());
           }}
         />
       )}
