@@ -40,6 +40,18 @@ export function FlowGame({
   const boardRef = useRef<HTMLDivElement>(null);
   const [showHintAd, setShowHintAd] = useState(false);
   const [hintColor, setHintColor] = useState<string | null>(null);
+  const [hintCooldownUntil, setHintCooldownUntil] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (hintCooldownUntil <= now) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [hintCooldownUntil, now]);
+
+  const cooldownRemaining = Math.max(0, Math.ceil((hintCooldownUntil - now) / 1000));
+  const hintDisabled = solved || cooldownRemaining > 0;
+  const formatCooldown = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
   const reset = useCallback(() => {
     setPaths({});
