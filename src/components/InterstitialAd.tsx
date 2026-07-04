@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 /** Adsterra 160x300 (portrait) interstitial. Replace key below. */
-const ADSTERRA_KEY_160x300 = ""; // <-- paste your Adsterra 160x300 key here
+const ADSTERRA_KEY_160x300 = "1bd8324c8233e2e40028ca230e267d5d";
 
 export function InterstitialAd({
   onClose,
